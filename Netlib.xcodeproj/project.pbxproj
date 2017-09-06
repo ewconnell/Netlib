@@ -64,7 +64,7 @@
 		6C90F7F01E5E84F800A963CA /* AtomicCounter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C0CCD3F1E4C1FB4009ADFB9 /* AtomicCounter.swift */; };
 		6CA5511D1E2E9F45007FCD48 /* libpng16.16.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 6CA5511C1E2E9F45007FCD48 /* libpng16.16.dylib */; };
 		6CA5511F1E2E9F53007FCD48 /* libjpeg.8.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 6CA5511E1E2E9F53007FCD48 /* libjpeg.8.dylib */; };
-		6CA6D9FB1F60B83E00B1C971 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CA6D9FA1F60B83E00B1C971 /* main.swift */; };
+		6CA6D9FD1F60B95D00B1C971 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CA6D9FC1F60B88E00B1C971 /* main.swift */; };
 		6CDD76E41E6653D400C3E4CA /* BinarySerializable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CDD76E01E66537F00C3E4CA /* BinarySerializable.swift */; };
 		6CDD76E51E6653D400C3E4CA /* mutex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CDD76E11E66537F00C3E4CA /* mutex.swift */; };
 		6CF7248E1F15248900A8D497 /* Samples.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CF7248D1F15248900A8D497 /* Samples.swift */; };
@@ -233,7 +233,6 @@
 		6CA551261E2EA018007FCD48 /* module.modulemap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
 		6CA551271E2EA018007FCD48 /* kernelUtilities.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = kernelUtilities.c; sourceTree = "<group>"; };
 		6CA551291E2EA018007FCD48 /* softmaxLabelGradient.cu */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = softmaxLabelGradient.cu; sourceTree = "<group>"; };
-		6CA6D9FA1F60B83E00B1C971 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = main.swift; path = Sources/diagnosticExample/main.swift; sourceTree = "<group>"; };
 		6CA6D9FC1F60B88E00B1C971 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		6CDD76E01E66537F00C3E4CA /* BinarySerializable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BinarySerializable.swift; sourceTree = "<group>"; };
 		6CDD76E11E66537F00C3E4CA /* mutex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = mutex.swift; sourceTree = "<group>"; };
@@ -562,7 +561,6 @@
 		OBJ_5 = {
 			isa = PBXGroup;
 			children = (
-				6CA6D9FA1F60B83E00B1C971 /* main.swift */,
 				OBJ_6 /* Package.swift */,
 				OBJ_7 /* Sources */,
 				OBJ_100 /* Tests */,
@@ -731,7 +729,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6CA6D9FB1F60B83E00B1C971 /* main.swift in Sources */,
+				6CA6D9FD1F60B95D00B1C971 /* main.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
