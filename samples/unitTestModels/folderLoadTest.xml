@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Function>
+	<items>
+		<Database connection="folderContents" rebuild="always">
+			<source>
+				<FileList dataDir="samples/images" fileTypes="tif : image, mp3 : audio"/>
+			</source>
+		</Database>
+	</items>
+</Function>

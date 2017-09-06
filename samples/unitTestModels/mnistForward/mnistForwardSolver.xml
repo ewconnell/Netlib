@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Function name="mnistClassifierSolver" data="solver" labels="solver.labels">
+	<!-- Function items namespace -->
+	<items>
+		<Solver name="solver" data="mnistClassifier" labels="mnistClassifier.labels" maxIterations="0">
+			<defaults>
+				<Default property=".cacheDir"               value="~/Documents/data/cache/mnist/"/>
+				<Default property=".dataDir"                value="~/Documents/data/unitTest"/>
+				<Default property=".weights.fillMethod"     value="xavier"/>
+				<Default property=".bias.fillMethod"        value="constant"/>
+				<Default property=".bias.learningRateScale" value="2"/>
+				<Default property="ImageCodec.format"       object="{ImageFormat encoding='png' channelFormat='gray'/}"/>
+				<Default property="FullyConnected.weights.uriDataIsColMajor" value="true"/>
+			</defaults>
+
+			<items>
+				<Function name="mnistClassifier" data="softmax"
+				          input="trainingDatabase" labelsInput="trainingDatabase.labels">
+					<items>
+						<!-- classification -->
+						<Softmax name="softmax" input="fc2" labelsInput=".labelsInput"/>
+						<FullyConnected name="fc2" input="lrn1" outputChannels="10"
+						                bias="{LearnedParameter uriString='ip2.bias.bin'/}"
+						                weights="{LearnedParameter uriDataExtent='500, 10' uriString='ip2.bin'/}"/>
+
+						<LrnCrossChannel name="lrn1" input="act1" k="1"/>
+						<Activation name="act1" input="fc1"/>
+						<FullyConnected name="fc1" input="pool2" outputChannels="500"
+						                bias="{LearnedParameter uriString='ip1.bias.bin'/}"
+						                weights="{LearnedParameter uriDataExtent='800, 500' uriString='ip1.bin'/}"/>
+
+						<!-- compress feature space -->
+						<Pooling name="pool2" input="conv2"/>
+						<Convolution name="conv2" input="pool1" filterSize="5" outputChannels="50"
+						             bias="{LearnedParameter uriString='conv2.bias.bin'/}"
+						             weights="{LearnedParameter uriDataExtent='50, 20, 5, 5' uriString='conv2.bin'/}"/>
+
+						<Pooling name="pool1" input="conv1"/>
+						<Convolution name="conv1" input=".input" filterSize="5" outputChannels="20"
+						             bias="{LearnedParameter uriString='conv1.bias.bin'/}"
+						             weights="{LearnedParameter uriDataExtent='20, 1, 5, 5' uriString='conv1.bin'/}"/>
+					</items>
+				</Function>
+
+				<Database name="trainingDatabase" connection="mnistForward"
+				          shuffle="false">
+					<source>
+						<FileList>
+							<defaults>
+								<Default property=".codecType" value="image"/>
+							</defaults>
+
+							<items>
+								<DataContainer uriString="one_28x28.png"   labelValue="1"/>
+								<DataContainer uriString="three_28x28.png" labelValue="3"/>
+								<DataContainer uriString="five_28x28.png"  labelValue="5"/>
+							</items>
+						</FileList>
+					</source>
+				</Database>
+			</items>
+
+			<!-- tests to run -->
+			<tests>
+				<Test>
+					<items>
+						<Function name="testOnTrain">
+							<items>
+								<Accuracy input="testFunc" labelsInput="testOnTrainDatabase.labels"/>
+								<Function name="testFunc" template="mnistClassifier" input="testOnTrainDatabase"
+								          labelsInput="testOnTrainDatabase.labels"/>
+								<Database name="testOnTrainDatabase" template="trainingDatabase"/>
+							</items>
+						</Function>
+					</items>
+				</Test>
+			</tests>
+		</Solver>
+	</items>
+</Function>

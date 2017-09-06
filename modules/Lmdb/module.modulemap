@@ -1,0 +1,5 @@
+module Lmdb [system] {
+	header "include_lmdb.h"
+  link "lmdb"
+  export *
+}

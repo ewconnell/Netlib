@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Model name="mnistClassifierSolver" data="solver" labels="solver.labels">
+	<items>
+		<Solver name="solver" data="mnistClassifier" labels="mnistClassifier.labels">
+			<defaults>
+				<Default property=".cacheDir"                           value="~/Documents/data/cache/mnistClassifier/"/>
+				<Default property=".dataDir"                            value="~/Documents/data/mnistClassifier/"/>
+				<Default property=".deviceReport"                       value="false"/>
+				<Default property=".bias.learningRateScale"             value="2"/>
+				<Default property="Convolution.backwardDataAlgorithm"   value="algo0"/>
+				<Default property="Convolution.backwardFilterAlgorithm" value="algo0"/>
+				<Default property="ImageCodec.format"                   object="{ImageFormat encoding='png' channelFormat='gray'/}"/>
+			</defaults>
+			
+			<items>
+				<Function name="mnistClassifier" data="mainFunction">
+					<items>
+						<Function name="mainFunction" data="softmax">
+							<defaults>
+								<Default property="Convolution.mode"             value="crossCorrelation"/>
+								<Default property="Convolution.forwardAlgorithm" value="implicitPrecompGEMM"/>
+							</defaults>
+							
+							<items>
+								<!-- classification -->
+								<Softmax         name="softmax" input="fc2" labelsInput=".labelsInput"/>
+								<FullyConnected  name="fc2"     input="lrn1" outputChannels="10"/>
+								<LrnCrossChannel name="lrn1"    input="act1" k="1"/>
+								<Activation      name="act1"    input="fc1"/>
+								<FullyConnected  name="fc1"     input="pool2" outputChannels="500"/>
+								
+								<!-- compress feature space -->
+								<Pooling     name="pool2" input="conv2"/>
+								<Convolution name="conv2" input="pool1" outputChannels="50"/>
+								<Pooling     name="pool1" input="conv1"/>
+								<Convolution name="conv1" input=".input"/>
+							</items>
+						</Function>
+					</items>
+				</Function>
+				
+				<!-- Mnist training database -->
+				<Database name="trainingDatabase" connection="trainingDb">
+					<source>
+						<Mnist dataSet="training"/>
+					</source>
+				</Database>
+			</items>
+			
+			<!-- tests to run -->
+			<tests>
+				<Test>
+					<items>
+						<!-- test on test data -->
+						<Function name="testOnTest">
+							<items>
+								<Accuracy input="Function" labelsInput="Function.labels"/>
+								<Function template="mnistClassifier" input="validationDatabase"
+								labelsInput="validationDatabase.labels"/>
+								
+								<Database name="validationDatabase" connection="validationDb">
+									<source>
+										<Mnist dataSet="validation"/>
+									</source>
+								</Database>
+							</items>
+						</Function>
+						
+						<!-- test on training data -->
+						<Function name="testOnTrain">
+							<items>
+								<Accuracy input="Function" labelsInput="Function.labels"/>
+								<Function template="mnistClassifier" input="testOnTrainDatabase"
+								labelsInput="testOnTrainDatabase.labels"/>
+								<Database name="testOnTrainDatabase" template="trainingDatabase"/>
+							</items>
+						</Function>
+					</items>
+				</Test>
+			</tests>
+		</Solver>
+	</items>
+</Model>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Model name="mnistForward" data="mainFunction" labels="mainFunction.labels"
+       defaultValues=".dataDir: ~/Documents/data/unitTest">
+	<items>
+		<Function name="mainFunction" data="softmax" input="database" labelsInput="database.labels">
+			<items>
+				<!-- classification -->
+				<Softmax name="softmax" input="fc2" labelsInput=".labelsInput"/>
+				<FullyConnected name="fc2" input="lrn1" outputChannels="10"
+					bias="{LearnedParameter uriString='ip2.bias.bin'/}"
+					weights="{LearnedParameter uriDataExtent='500, 10' uriDataIsColMajor='true' uriString='ip2.bin'/}"/>
+
+				<LrnCrossChannel name="lrn1" input="act1" k="1"/>
+				<Activation name="act1" input="fc1"/>
+				<FullyConnected name="fc1" input="pool2" outputChannels="500"
+					bias="{LearnedParameter uriString='ip1.bias.bin'/}"
+					weights="{LearnedParameter uriDataExtent='800, 500' uriDataIsColMajor='true' uriString='ip1.bin'/}"/>
+			
+				<!-- compress feature space -->
+				<Pooling name="pool2" input="conv2"/>
+				<Convolution name="conv2" input="pool1" filterSize="5" outputChannels="50"
+					bias="{LearnedParameter uriString='conv2.bias.bin'/}"
+					weights="{LearnedParameter uriDataExtent='50, 20, 5, 5' uriString='conv2.bin'/}"/>
+				
+				<Pooling name="pool1" input="conv1"/>
+				<Convolution name="conv1" input=".input" filterSize="5" outputChannels="20"
+					bias="{LearnedParameter uriString='conv1.bias.bin'/}"
+					weights="{LearnedParameter uriDataExtent='20, 1, 5, 5' uriString='conv1.bin'/}"/>
+					
+			</items>
+		</Function>
+		
+		<Database name="database" connection="mnistForward" rebuild="always" shuffle="false">
+			<source>
+				<FileList defaultValues=".codecType: image">
+					<items>
+						<DataContainer uriString="one_28x28.png"   labelValue="1"/>
+						<DataContainer uriString="three_28x28.png" labelValue="3"/>
+						<DataContainer uriString="five_28x28.png"  labelValue="5"/>
+					</items>
+				</FileList>
+			</source>
+		</Database>
+	</items>
+</Model>

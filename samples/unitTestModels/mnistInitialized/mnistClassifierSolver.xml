@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Function>
+	<items>
+		<Solver labels="mnistClassifier.labels" removeDatabases="true"
+			batchSize="64" maxIterations="10000" testInterval="500">
+			<!--  removeDatabases="true" -->
+			<defaults>
+				<!--<Default property="Database.streamOutput"   value="true"/>-->
+				<Default property=".seed"                   value="0"/>
+				<Default property=".cacheDir"               value="~/Documents/data/cache/mnist/"/>
+				<Default property=".dataDir"                value="~/Documents/data/mnist/"/>
+				<Default property=".weights.fillMethod"     value="xavier"/>
+				<Default property=".bias.learningRateScale" value="2"/>
+				<Default property="ImageCodec.format"       object="{ImageFormat encoding='png' channelFormat='gray'/}"/>
+			</defaults>
+			
+			<items>
+				<Function name="mnistClassifier"
+				templateUri="{Uri string='mnistClassifier.xml'/}"
+				labelsInput="trainingDatabase.labels"/>
+				
+				<Database name="trainingDatabase" connection="trainingDb" shuffle="false">
+					<source>
+						<Mnist dataSet="training"/>
+					</source>
+				</Database>
+			</items>
+			
+			<!-- tests to run -->
+			<tests>
+				<Test>
+					<items>
+						<Function name="validationTest">
+							<items>
+								<Accuracy labelsInput="validationDatabase.labels"/>
+								<Function template="mnistClassifier" labelsInput="validationDatabase.labels"/>
+								<Database name="validationDatabase" connection="validationDb">
+									<source>
+										<Mnist dataSet="validation"/>
+									</source>
+								</Database>
+							</items>
+						</Function>
+					</items>
+				</Test>
+			</tests>
+		</Solver>
+	</items>
+</Function>

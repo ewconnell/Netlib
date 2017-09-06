@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Solver labels="vgg16Classifier.labels"
+        learningRate=".01" maxIterations="10000"
+        batchSize="128" testInterval="100">
+	<defaults>
+		<Default property="Database.dataType"   value="real16F"/>
+		<Default property=".cacheDir"           value="~/Documents/data/cache/tinyImageNet/"/>
+		<Default property=".dataDir"            value="~/Documents/data/tinyImageNet/"/>
+		<Default property=".weights.fillMethod" value="xavier"/>
+		<Default property="ImageCodec.format"   object="{ImageFormat encoding='jpeg' channelFormat='rgb'/}"/>
+	</defaults>
+
+	<items>
+		<Function name="vgg16Classifier" templateUri="{Uri string='vgg16.xml'/}"
+		          labelsInput="trainingDb.labels"/>
+		<Database name="trainingDb" connection="trainingDb"
+		          source="{TinyImageNet dataSet='training'/}"/>
+	</items>
+
+	<tests>
+		<Test>
+			<items>
+				<Function name="validationTest">
+					<items>
+						<Accuracy labelsInput="validationDb.labels"/>
+						<Function template="vgg16Classifier" labelsInput="validationDb.labels"/>
+						<Database name="validationDb" connection="validationDb"
+						          source="{TinyImageNet dataSet='validation'/}"/>
+					</items>
+				</Function>
+			</items>
+		</Test>
+	</tests>
+</Solver>

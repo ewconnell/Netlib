@@ -1,0 +1,5 @@
+module CJpeg [system] {
+  header "include_jpeg.h"
+  link "jpeg"
+  export *
+}

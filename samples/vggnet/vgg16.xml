@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Function name="vgg16">
+	<!--http://www.robots.ox.ac.uk/~vgg/research/very_deep/-->
+	<!-- https://gist.github.com/ksimonyan/211839e770f7b538e2d8#file-readme-md -->
+	<templates>
+		<Function name="layer_12">
+			<items>
+				<Pooling/>
+				<Convolution/>
+				<Convolution/>
+			</items>
+		</Function>
+
+		<Function name="layer_345">
+			<items>
+				<Pooling/>
+				<Convolution/>
+				<Convolution/>
+				<Convolution/>
+			</items>
+		</Function>
+
+		<Function name="layer_67">
+			<items>
+				<Dropout/>
+				<Activation/>
+				<FullyConnected outputChannels="4096"/>
+			</items>
+		</Function>
+	</templates>
+
+	<items>
+		<Function defaultValues="Convolution.pad: 1, Convolution.activationMode: relu">
+			<items>
+				<Softmax labelsInput=".labelsInput"/>
+				<FullyConnected outputChannels="1000"/>
+				<Function template="layer_67"/>
+				<Function template="layer_67"/>
+				<Function template="layer_345" defaultValues=".outputChannels: 512"/>
+				<Function template="layer_345" defaultValues=".outputChannels: 512"/>
+				<Function template="layer_345" defaultValues=".outputChannels: 256"/>
+				<Function template="layer_12"  defaultValues=".outputChannels: 128"/>
+				<Function template="layer_12"  defaultValues=".outputChannels: 64"/>
+			</items>
+		</Function>
+	</items>
+</Function>

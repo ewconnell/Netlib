@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Function>
+	<items>
+		<Softmax labelsInput=".labelsInput"/>
+		<FullyConnected/>
+		<Activation/>
+		<FullyConnected outputChannels="500"/>
+		<Pooling/>
+		<Convolution filterSize="5" outputChannels="50"/>
+		<Pooling/>
+		<Convolution filterSize="5" outputChannels="20"/>
+	</items>
+</Function>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Solver labels="mnistClassifier.labels" maxIterations="10000"
+        weightDecay="0.006" testBatchSize="1000">
+	<defaults>
+		<!--<Default property="Database.streamOutput" value="true"/>-->
+		<!--<Default property="Database.dataType"     value="real16F"/>-->
+		<Default property=".cacheDir"             value="~/Documents/data/cache/mnist/"/>
+		<Default property=".dataDir"              value="~/Documents/data/mnist/"/>
+		<Default property=".weights.fillMethod"   value="xavier"/>
+		<Default property="ImageCodec.format"     object="{ImageFormat encoding='png' channelFormat='gray'/}"/>
+	</defaults>
+	
+	<items>
+		<Function name="mnistClassifier" templateUri="{Uri string='mnistClassifier.xml'/}"
+		          labelsInput="trainingDb.labels"/>
+		<Database name="trainingDb" connection="trainingDb" source="{Mnist dataSet='training'/}"/>
+	</items>
+	
+	<tests>
+		<Test>
+			<items>
+				<Function name="validationData">
+					<items>
+						<Accuracy labelsInput="validationDb.labels"/>
+						<Function template="mnistClassifier" labelsInput="validationDb.labels"/>
+						<Database name="validationDb" connection="validationDb"
+							        source="{Mnist dataSet='validation'/}"/>
+					</items>
+				</Function>
+			</items>
+		</Test>
+	</tests>
+</Solver>

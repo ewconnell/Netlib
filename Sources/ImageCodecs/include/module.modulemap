@@ -1,0 +1,7 @@
+module ImageCodecs [system] {
+	header "ImageCodecs.h"
+//	link "ImageCodecs"
+	link "png"
+	link "jpeg"
+	export *
+}
