@@ -5,7 +5,7 @@ Initial performance tests indicate Netlib is approximately 4X faster than Caffe2
 
 Netlib is a research project written entirely in Swift 4.0, with a small amount of C and Cuda code. Netlib intentionally has no Objective-C dependencies.
 
-Please refer to the [documentation](https://github.com/ewconnell/Netlib/wiki) for more detailed information.
+Please refer to the [documentation](https://github.com/ewconnell/Netlib/wiki/Netlib) for more detailed information.
 
 # Swiftness
 Netlib has been developed while the Swift language and tools have been evolving. Several design decisions have been made along the way that are not ideally Swifty in order to work around compiler crashes, lldb crashes, runtime library crashes, unimplemented Foundation features on Linux, and performance problems. Most problems have been related to generics, protocols, and protocol extensions. In most cases, implementing objects as Swift classes allowed a work around for problems.
