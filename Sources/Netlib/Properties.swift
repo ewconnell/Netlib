@@ -8,7 +8,7 @@ import Foundation
 //==============================================================================
 // Properties
 //  Adopted by objects that want dynamic properties
-public protocol Properties : class, Logging {
+public protocol Properties : Logging {
 	// properties
 	var isContainer: Bool { get }
 	var name: String? { get set }
