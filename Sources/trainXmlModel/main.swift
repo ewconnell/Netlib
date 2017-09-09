@@ -9,9 +9,11 @@ import Netlib
 
 do {
 	let fileName = "samples/mnist/mnistClassifierSolver"
-	guard let path = Bundle.main.path(forResource: fileName, ofType: "xml") else { exit(1) }
+	guard let path = Bundle.main.path(forResource: fileName, ofType: "xml") else {
+		fatalError("Resource not found: \(fileName)")
+	}
 
-	let model = try Model(contentsOf: URL(fileURLWithPath: path), logLevel: .status)
+	let model = try Model(contentsOf: URL(fileURLWithPath: path))
 	try model.train()
 
 } catch {

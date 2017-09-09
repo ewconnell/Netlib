@@ -27,8 +27,10 @@ do {
 		$0.log.logLevel = .status
 	}
 
-	let modelName = "samples/mnist/mnistClassifierSolver"
-	guard let path = Bundle.main.path(forResource: modelName, ofType: "xml") else { exit(1) }
+	let fileName = "samples/mnist/mnistClassifierSolver"
+	guard let path = Bundle.main.path(forResource: fileName, ofType: "xml") else {
+		fatalError("Resource not found: \(fileName)")
+	}
 	try model.load(contentsOf: URL(fileURLWithPath: path))
 
 	var times = [TimeInterval]()

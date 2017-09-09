@@ -25,9 +25,9 @@ public final class Model :
 
 	//-----------------------------------
 	// root model initialized from URL
-	public convenience init(contentsOf url: URL, logLevel: LogLevel? = nil) throws {
+	public convenience init(contentsOf url: URL, logLevel: LogLevel = .status) throws {
 		self.init()
-		if let level = logLevel { log.logLevel = level }
+		log.logLevel = logLevel
 		try load(contentsOf: url)
 	}
 
