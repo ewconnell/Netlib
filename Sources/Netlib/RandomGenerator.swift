@@ -88,17 +88,24 @@ final class SplitMix64 : RandomGenerator {
 	}
 }
 
+// Based on http://xoroshiro.di.unimi.it/xoroshiro128plus.c
+// Both higher quality and faster than SplitMix64, uses SplitMix64 to scramble seed into a valid state.
 final class Xoroshiro128Plus : RandomGenerator {
-	// Based on http://xoroshiro.di.unimi.it/xoroshiro128plus.c
-	// Both higher quality and faster than SplitMix64, uses SplitMix64 to scramble seed into a valid state.
-	var state: (UInt64, UInt64) // The state of Xoroshiro128Plus must not be everywhere zero.
+	// initializers
 	init?(state: (UInt64, UInt64)) {
 		if state.0 != 0 || state.1 != 0 { self.state = state } else { return nil }
 	}
+
 	init(seed: UInt64) {
 		let sm = SplitMix64(seed: seed)
 		state = (sm.next(), sm.next())
 	}
+
+	// properties
+	var state: (UInt64, UInt64) // The state of Xoroshiro128Plus must not be everywhere zero.
+	private var s = 0.0
+	private var v2 = 0.0
+	private var cached_v2 = false
 
 	func next() -> UInt64 {
 		func rol55(_ x: UInt64) -> UInt64 { return (x << 55) | (x >> 9) }
@@ -107,6 +114,27 @@ final class Xoroshiro128Plus : RandomGenerator {
 		let t = state.1 ^ state.0
 		state = (rol55(state.0) ^ t ^ (t << 14), rol36(t))
 		return result
+	}
+
+	// nextGaussianInUnitRange
+	//  ewconnell - added for normal distribution generation
+	func nextGaussianInUnitRange() -> Double {
+		// Box-Muller transform
+		var u1, u2, v1, x : Double
+		if cached_v2 {
+			x = v2 * sqrt(-2 * log(s) / s)
+		} else {
+			repeat {
+				u1 = next().doubleInUnitRange()
+				u2 = next().doubleInUnitRange()
+				v1 = 2 * u1 - 1
+				v2 = 2 * u2 - 1
+				s = v1 * v1 + v2 * v2
+			} while (s >= 1 || s == 0)
+			x = v1 * sqrt(-2 * log(s) / s)
+		}
+		cached_v2 = !cached_v2
+		return x
 	}
 }
 
@@ -121,6 +149,7 @@ extension UInt64 {
 		let shifts: UInt64 = 63 - UInt64(Double.significandBitCount)
 		return Double(self >> shifts) * (.ulpOfOne/2)
 	}
+
 	func floatsInUnitRange() -> (Float, Float) {
 		let low = UInt32(self)
 		let high = UInt32(self >> 32)

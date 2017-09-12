@@ -158,10 +158,7 @@ public func cpuFillGaussian(data: inout DataView, mean: Double, std: Double) thr
 		let rng = Xoroshiro128Plus()
 
 		result.forEachIndex {
-			let x = rng.next().doubleInUnitRange() - mean
-			let stdSq = std * std
-			let rnorm = (1 / sqrt(2 * Double.pi * stdSq)) * exp(-(x * x) / (2 * stdSq))
-			buffer[$0] = T(norm: rnorm)
+			buffer[$0] = T(norm: mean + rng.nextGaussianInUnitRange() * std)
 		}
 	}
 	
