@@ -183,6 +183,17 @@ extension ReductionOp {
 //------------------------------------------------------------------------------
 // DataType extension
 extension DataType {
+	public init(cudnn: cudnnDataType_t) {
+		switch cudnn {
+		case CUDNN_DATA_INT8:   self = .real8U
+		case CUDNN_DATA_INT32:  self = .real32I
+		case CUDNN_DATA_HALF:   self = .real16F
+		case CUDNN_DATA_FLOAT:  self = .real32F
+		case CUDNN_DATA_DOUBLE: self = .real64F
+		default: fatalError("Invalid state")
+		}
+	}
+
 	public var cudnn: cudnnDataType_t {
 		get {
 			switch self {
@@ -486,6 +497,29 @@ public final class TensorDescriptor : ObjectTracking {
 	// properties
 	public private (set) var trackingId = 0
 	let desc: cudnnTensorDescriptor_t
+
+	// getInfo
+	public func getInfo() throws -> (extent: [Int], strides: [Int], DataType) {
+		let reqDims = Int(CUDNN_DIM_MAX)
+		var dims = [Int32](repeating: 0, count: reqDims)
+		var strides = [Int32](repeating: 0, count: reqDims)
+		var type = cudnnDataType_t(0)
+		var numDims: Int32 = 0
+
+		try cudaCheck(status: cudnnGetTensorNdDescriptor(
+			desc,
+      Int32(reqDims),
+			&type,
+			&numDims,
+			&dims,
+			&strides
+		))
+
+		return (
+			dims[0..<Int(numDims)].map { Int($0) },
+			strides[0..<Int(numDims)].map { Int($0) },
+			DataType(cudnn: type))
+	}
 }
 
 //==============================================================================

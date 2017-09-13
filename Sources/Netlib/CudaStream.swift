@@ -155,6 +155,7 @@ public final class CudaStream : DeviceStream {
 		try device.select()
 		switch type {
 		case "Activation"     : return CudaActivation(log: currentLog, props: props, stream: self)
+		case "BatchNormalize" : return CudaBatchNormalize(log: currentLog, props: props, stream: self)
 		case "Convolution"    : return CudaConvolution(log: currentLog, props: props, stream: self)
 		case "Dropout"        : return CudaDropout(log: currentLog, props: props, stream: self)
 		case "FullyConnected" : return CudaFullyConnected(log: currentLog, props: props, stream: self)

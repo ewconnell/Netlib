@@ -24,19 +24,18 @@ public final class CudaBatchNormalize : Computable {
 	private var inTensor: TensorDescriptor!
 	private var outTensor: TensorDescriptor!
 	private var scaleBiasMeanVarianceTensor: TensorDescriptor!
-	private var bnMode: cudnnBatchNormMode_t!
+	private var bnMode: BatchNormalizeMode!
+	private var sbmvShape: Shape!
 
 	// working buffers
-	private var estimated_mean: CudaDeviceArray!
-	private var estimated_var: CudaDeviceArray!
-	private var running_mean: CudaDeviceArray!
-	private var running_var: CudaDeviceArray!
-	private var saved_mean: CudaDeviceArray!
-	private var saved_var: CudaDeviceArray!
-	private var grad_scale: CudaDeviceArray!
-	private var grad_bias: CudaDeviceArray!
-	private var scale: CudaDeviceArray!
-	private var bias: CudaDeviceArray!
+	private var running_mean: DeviceArray!
+	private var running_var: DeviceArray!
+	private var saved_mean: DeviceArray!
+	private var saved_var: DeviceArray!
+	private var grad_scale: DeviceArray!
+	private var grad_bias: DeviceArray!
+	private var scale: DeviceArray!
+	private var bias: DeviceArray!
 
 	// logging
 	public var logLevel = LogLevel.error
@@ -52,7 +51,7 @@ public final class CudaBatchNormalize : Computable {
 
 			try cudaCheck(status: cudnnBatchNormalizationForwardTraining(
 				dataStream.cudnn.handle,
-				props.mode.cudnn,
+				bnMode.cudnn,
 				inData.one,
 				outData.zero,
 				inTensor.desc,
@@ -73,7 +72,7 @@ public final class CudaBatchNormalize : Computable {
 		} else {
 			try cudaCheck(status: cudnnBatchNormalizationForwardInference(
 				dataStream.cudnn.handle,
-				props.mode.cudnn,
+				bnMode.cudnn,
 				inData.one,
 				outData.zero,
 				inTensor.desc,
@@ -83,8 +82,8 @@ public final class CudaBatchNormalize : Computable {
 				scaleBiasMeanVarianceTensor!.desc,
 				scale.data,
 				bias.data,
-				estimated_mean.data,
-				estimated_var.data,
+				running_mean.data,
+				running_var.data,
 				props.epsilon
 			))
 		}
@@ -100,7 +99,7 @@ public final class CudaBatchNormalize : Computable {
 
 		try cudaCheck(status: cudnnBatchNormalizationBackward(
 			dataStream.cudnn.handle,
-			props.mode.cudnn,
+			bnMode.cudnn,
 			inData.one,
 			inData.zero,
 			inData.one,
@@ -135,10 +134,9 @@ public final class CudaBatchNormalize : Computable {
 		// discover bnMode
 		if props.mode == .auto {
 			// TODO search upstream
-			bnMode = BatchNormalizeMode.spatial.cudnn
-
+			bnMode = BatchNormalizeMode.spatial
 		} else {
-			bnMode = props.mode.cudnn
+			bnMode = props.mode
 		}
 
 		// assure the output is the correct type and size
@@ -151,8 +149,17 @@ public final class CudaBatchNormalize : Computable {
 		// create the scaleBiasMeanVarianceTensor descriptor
 		var temp: cudnnTensorDescriptor_t?
 		try cudaCheck(status: cudnnCreateTensorDescriptor(&temp))
-		try cudaCheck(status: cudnnDeriveBNTensorDescriptor(temp!, inTensor.desc, bnMode))
+		try cudaCheck(status: cudnnDeriveBNTensorDescriptor(temp!, inTensor.desc, bnMode.cudnn))
 		scaleBiasMeanVarianceTensor = TensorDescriptor(owning: temp!)
+
+		let (extent, strides, sbmvDataType) = try scaleBiasMeanVarianceTensor.getInfo()
+		sbmvShape = Shape(extent: extent, layout: .nchw, strides: strides)
+		let byteCount = sbmvShape.elementCount * sbmvDataType.size
+
+		scale = try dataStream.device.createArray(count: byteCount)
+		bias = try dataStream.device.createArray(count: byteCount)
+		running_mean = try dataStream.device.createArray(count: byteCount)
+		running_var = try dataStream.device.createArray(count: byteCount)
 	}
 }
 
