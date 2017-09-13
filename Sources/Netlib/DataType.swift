@@ -155,8 +155,7 @@ public func expand<T>(array: [T], to rank: Int) -> [T] {
 
 //------------------------------------------------------------------------------
 // NumericType
-public protocol NumericType
-{
+public protocol NumericType {
 	static func +(lhs: Self, rhs: Self) -> Self
 	static func -(lhs: Self, rhs: Self) -> Self
 	static func *(lhs: Self, rhs: Self) -> Self

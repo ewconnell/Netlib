@@ -154,11 +154,11 @@ public func cpuFillWithIndex(data: inout DataView, startingAt: Int) throws {
 public func cpuFillGaussian(data: inout DataView, mean: Double, std: Double) throws {
 
 	func setValues<T: AnyNumber>(_ result: inout DataView, _ type: T.Type) throws {
-		let buffer = try result.rw(type: T.self)
+		let array = try result.rw(type: T.self)
 		let rng = Xoroshiro128Plus()
 
 		result.forEachIndex {
-			buffer[$0] = T(norm: mean + rng.nextGaussianInUnitRange() * std)
+			array[$0] = T(norm: (rng.nextGaussianInUnitRange() * std) + mean)
 		}
 	}
 	

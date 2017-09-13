@@ -643,6 +643,29 @@ public struct DataView : BinarySerializable {
 	}
 
 	//----------------------------------------------------------------------------
+	// meanAndStd
+	public func meanAndStd() throws -> (mean: Double, std: Double) {
+		func getStdMean<T: AnyNumber>(_ type: T.Type) throws -> (Double, Double) {
+			let array = try ro(type: T.self)
+			let count = Double(array.count)
+			let mean = array.reduce(0.0, { return $0 + Double(any: $1) }) / count
+			let std = sqrt((array.map { pow((Double(any: $0) - mean), 2) }
+				.reduce(0.0, +) / count))
+			return (mean, std)
+		}
+
+		switch dataType {
+		case .real8U:  return try getStdMean(UInt8.self)
+		case .real16U: return try getStdMean(UInt16.self)
+		case .real16I: return try getStdMean(Int16.self)
+		case .real32I: return try getStdMean(Int32.self)
+		case .real16F: return try getStdMean(Float16.self)
+		case .real32F: return try getStdMean(Float.self)
+		case .real64F: return try getStdMean(Double.self)
+		}
+	}
+
+	//----------------------------------------------------------------------------
 	// create a sub view
 	public func view(offset: [Int], extent: [Int]) -> DataView	{
 		// the view created will have the same isShared state as the parent

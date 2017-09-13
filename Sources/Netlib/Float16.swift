@@ -4,8 +4,7 @@
 //
 import Foundation
 
-public struct Float16 : Equatable, Comparable
-{
+public struct Float16 : Equatable, Comparable {
 	// initializers
 	public init() {	x = UInt16(0) }
 	public init(_ v: Float16) { x = v.x }

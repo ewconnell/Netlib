@@ -43,31 +43,16 @@ class TestFill: XCTestCase {
 			let model = Model()
 			try model.setup()
 			let stream = try model.compute.requestStreams(label: "dataStream")[0]
-			let count = 100
+			let count = 1000
 			var data = DataView(count: count)
 			let mean = 10.0
-			let halfMean = mean / 2
 			let std = 0.1
 			try stream.fillGaussian(data: &data, mean: mean, std: std, seed: 0)
-			
-			var testMean = 0.0
-			var testVariance = 0.0
-			for i in 0..<count {
-				let val: Double = try data.get(at: [i])
-				testMean += val
-				testVariance += (val - mean) * (val - mean)
-			}
-			
-			testMean /= Double(count)
-			testVariance /= Double(count)
-			
-			// test mean
-			XCTAssert(testMean >= mean - std * halfMean)
-			XCTAssert(testMean <= mean + std * halfMean)
-			
-			// test variance
-			XCTAssert(testVariance >= std * std / halfMean)
-			XCTAssert(testVariance <= std * std * halfMean)
+
+			let stat = try data.meanAndStd()
+			XCTAssert(abs(stat.mean - mean) < 0.01)
+			XCTAssert(abs(stat.std - std) < 0.01)
+
 		} catch {
 			XCTFail(String(describing: error))
 		}

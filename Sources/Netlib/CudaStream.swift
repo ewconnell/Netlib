@@ -495,40 +495,43 @@ public final class CudaStream : DeviceStream {
 	// fillGaussian
 	public func fillGaussian(data: inout DataView, mean: Double, std: Double,
 	                         generatorState: RandomGeneratorState) throws {
-		// validate
-		assert(generatorState is CudaRandomGeneratorState)
-		try device.select()
-
-		try cudaCheck(status: cudaFillGaussian(
-			cudaDataShape(from: data.flattened()), data.rw(using: self), mean, std,
-			(generatorState as! CudaRandomGeneratorState).handle, handle))
+		try cpuFillGaussian(data: &data, mean: mean, std: std)
+//		// validate
+//		assert(generatorState is CudaRandomGeneratorState)
+//		try device.select()
+//
+//		try cudaCheck(status: cudaFillGaussian(
+//			cudaDataShape(from: data.flattened()), data.rw(using: self), mean, std,
+//			(generatorState as! CudaRandomGeneratorState).handle, handle))
 	}
 
 	//-----------------------------------
 	// fillMSRA
 	public func fillMSRA(data: inout DataView, varianceNorm: FillVarianceNorm,
 	                     generatorState: RandomGeneratorState) throws {
-		// validate
-		assert(generatorState is CudaRandomGeneratorState)
-		try device.select()
-		let n = computeVarianceNorm(shape: data.shape, varianceNorm: varianceNorm)
-		try fillGaussian(data: &data, mean: 0, std: sqrt(2.0 / n),
-			               generatorState: generatorState)
+		try cpuFillMSRA(data: &data, varianceNorm: varianceNorm)
+//		// validate
+//		assert(generatorState is CudaRandomGeneratorState)
+//		try device.select()
+//		let n = computeVarianceNorm(shape: data.shape, varianceNorm: varianceNorm)
+//		try fillGaussian(data: &data, mean: 0, std: sqrt(2.0 / n),
+//			               generatorState: generatorState)
 	}
 
 	//-----------------------------------
 	// fillUniform
 	public func fillUniform(data: inout DataView, range: ClosedRange<Double>,
 	                        generatorState: RandomGeneratorState) throws {
-		// validate
-		assert(generatorState is CudaRandomGeneratorState)
-		// TODO: remove this constraint from kernel
-		assert(data.shape.isContiguous)
-		try device.select()
-
-		try cudaCheck(status: cudaFillUniform(
-			cudaDataShape(from: data.flattened()), data.rw(using: self),
-			(generatorState as! CudaRandomGeneratorState).handle, handle))
+		try cpuFillUniform(data: &data, range: range)
+//		// validate
+//		assert(generatorState is CudaRandomGeneratorState)
+//		// TODO: remove this constraint from kernel
+//		assert(data.shape.isContiguous)
+//		try device.select()
+//
+//		try cudaCheck(status: cudaFillUniform(
+//			cudaDataShape(from: data.flattened()), data.rw(using: self),
+//			(generatorState as! CudaRandomGeneratorState).handle, handle))
 	}
 
 	//-----------------------------------
