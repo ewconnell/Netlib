@@ -2,13 +2,11 @@
 <Function>
 	<items>
 		<Softmax labelsInput=".labelsInput"/>
-		<!--<Dropout/>-->
 		<FullyConnected outputChannels="10"/>
 		<Activation/>
 		<FullyConnected outputChannels="500"/>
 		<Pooling/>
 		<Convolution filterSize="5" outputChannels="50"/>
-		<BatchNormalize/>
 		<Pooling/>
 		<Convolution filterSize="5" outputChannels="20"/>
 	</items>

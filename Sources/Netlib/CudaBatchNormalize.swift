@@ -28,13 +28,11 @@ public final class CudaBatchNormalize : Computable {
 	private var workspaceSize = 0
 
 	// working buffers
-	private var running_mean: DeviceArray!
-	private var running_var: DeviceArray!
 	private var saved_mean: DeviceArray!
 	private var saved_var: DeviceArray!
 	private var grad_scale: DeviceArray!
 	private var grad_bias: DeviceArray!
-	private var scale: DeviceArray!
+	private var scale: DataView!
 	private var bias: DeviceArray!
 
 	// logging
@@ -59,11 +57,11 @@ public final class CudaBatchNormalize : Computable {
 				outTensor.desc,
 				outData.rw(using: dataStream),
 				scaleBiasMeanVarianceTensor!.desc,
-				scale.data,
+				scale.ro(using: dataStream),
 				bias.data,
 				expAverageFactor,
-				running_mean.data,
-				running_var.data,
+				props.running_mean?.rw(using: dataStream),
+				props.running_var?.rw(using: dataStream),
 				props.epsilon,
 				saved_mean.data,
 				saved_var.data
@@ -80,10 +78,10 @@ public final class CudaBatchNormalize : Computable {
 				outTensor.desc,
 				outData.rw(using: dataStream),
 				scaleBiasMeanVarianceTensor!.desc,
-				scale.data,
+				scale.ro(using: dataStream),
 				bias.data,
-				running_mean.data,
-				running_var.data,
+				props.running_mean?.ro(using: dataStream),
+				props.running_var?.ro(using: dataStream),
 				props.epsilon
 			))
 		}
@@ -111,13 +109,21 @@ public final class CudaBatchNormalize : Computable {
 			inTensor.desc,
 			inGrad!.rw(using: dataStream),
 			scaleBiasMeanVarianceTensor!.desc,
-			scale.data,
+			scale.ro(using: dataStream),
 			grad_scale.data,
 			grad_bias.data,
 			props.epsilon,
 			saved_mean.data,
 			saved_var.data
 		))
+	}
+
+	//----------------------------------------------------------------------------
+	// createZeroWorkspace
+	private func createZeroWorkspace(count: Int) throws -> DeviceArray {
+		let array = try dataStream.device.createArray(count: count)
+		try array.zero(using: dataStream)
+		return array
 	}
 
 	//----------------------------------------------------------------------------
@@ -156,22 +162,25 @@ public final class CudaBatchNormalize : Computable {
 		let shape = Shape(extent: extent, layout: .nchw, strides: strides)
 		workspaceSize = shape.elementCount * dataType.size
 
-		scale = try dataStream.device.createArray(count: workspaceSize)
-		bias = try dataStream.device.createArray(count: workspaceSize)
-		running_mean = try dataStream.device.createArray(count: workspaceSize)
-		running_var = try dataStream.device.createArray(count: workspaceSize)
+		var ones = DataView(shape: shape, dataType: dataType)
+		try dataStream.fill(data: &ones, with: 1.0)
+		scale = ones
+		bias = try createZeroWorkspace(count: workspaceSize)
+
+		props.running_mean = DataView(shape: shape, dataType: dataType)
+		props.running_var = DataView(shape: shape, dataType: dataType)
 
 		if mode == .training {
-			saved_mean = try dataStream.device.createArray(count: workspaceSize)
-			saved_var = try dataStream.device.createArray(count: workspaceSize)
+			saved_mean = try createZeroWorkspace(count: workspaceSize)
+			saved_var = try createZeroWorkspace(count: workspaceSize)
 		}
 	}
 
 	//----------------------------------------------------------------------------
 	// setupBackward
 	public func setupBackward(outData: DataView, outGrad: DataView?, inData: DataView) throws {
-		grad_scale = try dataStream.device.createArray(count: workspaceSize)
-		grad_bias = try dataStream.device.createArray(count: workspaceSize)
+		grad_scale = try createZeroWorkspace(count: workspaceSize)
+		grad_bias = try createZeroWorkspace(count: workspaceSize)
 	}
 }
 
