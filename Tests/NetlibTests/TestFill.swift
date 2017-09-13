@@ -49,9 +49,9 @@ class TestFill: XCTestCase {
 			let std = 0.1
 			try stream.fillGaussian(data: &data, mean: mean, std: std, seed: 0)
 
-			let stat = try data.meanAndStd()
-			XCTAssert(abs(stat.mean - mean) < 0.01)
-			XCTAssert(abs(stat.std - std) < 0.01)
+			let (dataMean, dataStd) = try data.meanAndStd()
+			XCTAssert(abs(dataMean - mean) < 0.01)
+			XCTAssert(abs(dataStd - std) < 0.01)
 
 		} catch {
 			XCTFail(String(describing: error))
