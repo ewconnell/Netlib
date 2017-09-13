@@ -25,7 +25,7 @@ public final class CudaBatchNormalize : Computable {
 	private var outTensor: TensorDescriptor!
 	private var scaleBiasMeanVarianceTensor: TensorDescriptor!
 	private var bnMode: BatchNormalizeMode!
-	private var sbmvShape: Shape!
+	private var workspaceSize = 0
 
 	// working buffers
 	private var running_mean: DeviceArray!
@@ -141,9 +141,9 @@ public final class CudaBatchNormalize : Computable {
 
 		// assure the output is the correct type and size
 		outData = DataView(shape: inData.shape, dataType: inData.dataType)
-		
+
 		// create tensor descriptors
-		inTensor  = try inData.createTensorDescriptor()
+		inTensor = try inData.createTensorDescriptor()
 		outTensor = try outData.createTensorDescriptor()
 
 		// create the scaleBiasMeanVarianceTensor descriptor
@@ -152,14 +152,26 @@ public final class CudaBatchNormalize : Computable {
 		try cudaCheck(status: cudnnDeriveBNTensorDescriptor(temp!, inTensor.desc, bnMode.cudnn))
 		scaleBiasMeanVarianceTensor = TensorDescriptor(owning: temp!)
 
-		let (extent, strides, sbmvDataType) = try scaleBiasMeanVarianceTensor.getInfo()
-		sbmvShape = Shape(extent: extent, layout: .nchw, strides: strides)
-		let byteCount = sbmvShape.elementCount * sbmvDataType.size
+		let (extent, strides, dataType) = try scaleBiasMeanVarianceTensor.getInfo()
+		let shape = Shape(extent: extent, layout: .nchw, strides: strides)
+		workspaceSize = shape.elementCount * dataType.size
 
-		scale = try dataStream.device.createArray(count: byteCount)
-		bias = try dataStream.device.createArray(count: byteCount)
-		running_mean = try dataStream.device.createArray(count: byteCount)
-		running_var = try dataStream.device.createArray(count: byteCount)
+		scale = try dataStream.device.createArray(count: workspaceSize)
+		bias = try dataStream.device.createArray(count: workspaceSize)
+		running_mean = try dataStream.device.createArray(count: workspaceSize)
+		running_var = try dataStream.device.createArray(count: workspaceSize)
+
+		if mode == .training {
+			saved_mean = try dataStream.device.createArray(count: workspaceSize)
+			saved_var = try dataStream.device.createArray(count: workspaceSize)
+		}
+	}
+
+	//----------------------------------------------------------------------------
+	// setupBackward
+	public func setupBackward(outData: DataView, outGrad: DataView?, inData: DataView) throws {
+		grad_scale = try dataStream.device.createArray(count: workspaceSize)
+		grad_bias = try dataStream.device.createArray(count: workspaceSize)
 	}
 }
 
