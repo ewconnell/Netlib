@@ -44,7 +44,7 @@ extension XmlConvertible where Self: ModelObject {
 			CreateXmlDocument(after: modelVersion, from: self, log: currentLog)
 				.xmlString(format: format, tabSize: tabSize)
 
-		return stream.write(xmlString, maxLength: xmlString.characters.count)
+		return stream.write(xmlString, maxLength: xmlString.count)
 	}
 
 	//----------------------------------------------------------------------------
@@ -99,7 +99,7 @@ extension XmlConvertible where Self: ModelObject {
 				case .object:
 					// convert xml syntax for outer most embedded object
 					var level = -1
-					let xmlString = String(attr.stringValue.characters.map({
+					let xmlString = String(attr.stringValue.map({
 						(char: Character) -> Character in
 						switch char {
 						case "{":
@@ -118,7 +118,7 @@ extension XmlConvertible where Self: ModelObject {
 					})).trim()
 
 					// make sure the embedded has an opening >
-					if xmlString.characters.first != "<" {
+					if xmlString.first != "<" {
 						writeLog("Embedded xml object expected. Found: \(xmlString)")
 						throw XmlConvertibleError.parsingError
 					}

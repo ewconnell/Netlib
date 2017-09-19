@@ -106,7 +106,7 @@ public class XmlDocument : Logging {
 			for attr in element.attributes {
 				let attrString = " \(attr.name)=\"\(attr.stringValue)\""
 				let currentCol = string.distance(from: beginLine, to: string.endIndex)
-				if currentCol + attrString.characters.count > 80 {
+				if currentCol + attrString.count > 80 {
 					string.append(newLine)
 					beginLine = string.endIndex
 					string.append(attrIndent)
@@ -230,7 +230,7 @@ public class XmlDocument : Logging {
 		
 		// check if has body
 		let hasBody = String(xml[headerContentRange])
-			.trimmingCharacters(in: .whitespacesAndNewlines).characters.last != "/"
+			.trimmingCharacters(in: .whitespacesAndNewlines).last != "/"
 
 		// recursively dive down to parse the body
 		let eltClosing: StringRange
@@ -271,7 +271,7 @@ public class XmlDocument : Logging {
 	// getNextChar
 	private func getNextChar(xml: String, index: String.Index) -> Character? {
 		if let nextIndex = getNextIndex(xml: xml, index: index) {
-			return xml.characters[nextIndex]
+			return xml[nextIndex]
 		} else {
 			return nil
 		}
@@ -344,8 +344,8 @@ public func reIndent(text: String, tabSize: Int) -> String {
 	let lines = text.components(separatedBy: "\n")
 	var result = ""
 	for line in lines {
-		if let firstChar = line.characters.index(where: { $0 != " "}) {
-			let count: Int = line.characters.distance(from: line.startIndex,
+		if let firstChar = line.index(where: { $0 != " "}) {
+			let count: Int = line.distance(from: line.startIndex,
 			                                          to: firstChar) / 4 * tabSize
 			result += String(repeating: " ", count: count) +
 				String(line[firstChar...]) + "\n"

@@ -345,7 +345,7 @@ public struct DataView : BinarySerializable {
 							// initialize line prefixes
 							let firstString = row < 10 ? pad + "[\(row)]\u{2080}": "[\(row)]\u{2080}"
 							var rowStrings = [firstString]
-							let nextPrefix = String(repeating: " ", count: firstString.characters.count - 1)
+							let nextPrefix = String(repeating: " ", count: firstString.count - 1)
 							for i in 1..<shape.channels {
 								if i < subscripts.count {
 									rowStrings.append("\(nextPrefix)\(subscripts[i])")

@@ -67,7 +67,7 @@ final public class Log : ModelObjectBase, InitHelper {
 	// create a queue to serialize write operations
 	private let queue = DispatchQueue(label: "Log.queue")
 	private static let levelColWidth =
-		String(describing: LogLevel.diagnostic).characters.count
+		String(describing: LogLevel.diagnostic).count
 
 	//----------------------------------------------------------------------------
 	// addAccessors
@@ -109,7 +109,7 @@ final public class Log : ModelObjectBase, InitHelper {
 
 			// add trailing fill
 			if !trailing.isEmpty {
-				let fillCount = minCount - eventStr.characters.count
+				let fillCount = minCount - eventStr.count
 				if message.isEmpty {
 					eventStr += String(repeating: trailing, count: fillCount)
 				} else {
@@ -222,7 +222,7 @@ public struct LogCategories: OptionSet, AnyConvertible {
 		if rawValue & LogCategories.streamSync.rawValue     != 0 { string += "streamSync, " }
 		if rawValue & LogCategories.tryDefaultsLookup.rawValue != 0 { string += "tryLookup, " }
 		if rawValue & LogCategories.download.rawValue       != 0 { string += "download, " }
-		if !string.isEmpty { string.characters.removeLast(2) }
+		if !string.isEmpty { string.removeLast(2) }
 		return string
 	}
 

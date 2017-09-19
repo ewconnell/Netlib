@@ -8,12 +8,12 @@ public func checkDiff(_ a: String, _ b: String) {
 	if a == b { return }
 	
 	// do string grad
-	let count = min(a.characters.count, b.characters.count)
+	let count = min(a.count, b.count)
 	var aIndex = a.startIndex
 	var bIndex = b.startIndex
 	
 	for _ in 0..<count {
-		if a.characters[aIndex] != b.characters[bIndex] {
+		if a[aIndex] != b[bIndex] {
 			let aStart = a.index(aIndex, offsetBy: max(-20, a.distance(from: aIndex, to: a.startIndex)))
 			let bStart = b.index(bIndex, offsetBy: max(-20, b.distance(from: bIndex, to: b.startIndex)))
 			let aEnd = a.index(aIndex, offsetBy: min(100, a.distance(from: aIndex, to: a.endIndex)))

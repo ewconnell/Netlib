@@ -34,7 +34,7 @@ public func extract(zip: URL, to destURL: URL, totalItems: inout Int,
 			let itemURL = destURL.appendingPathComponent(name)
 
 			// check for directory
-			if name.characters.last == "/" {
+			if name.last == "/" {
 				try FileManager.default.createDirectory(
 					atPath: itemURL.path, withIntermediateDirectories: true, attributes: nil)
 
