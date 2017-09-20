@@ -1,30 +1,34 @@
 from __future__ import print_function
 
-from tensorflow.examples.tutorials.mnist import input_data
-mnist = input_data.read_data_sets("MnistData/", one_hot=True)
-
 import tensorflow as tf
-
 from datetime import datetime
-start_time = datetime.now()
+from tensorflow.examples.tutorials.mnist import input_data
+
 
 def weight_variable(shape):
-  initial = tf.truncated_normal(shape, stddev=0.1)
-  return tf.Variable(initial)
+    initial = tf.truncated_normal(shape, stddev=0.1)
+    return tf.Variable(initial)
+
 
 def bias_variable(shape):
-  initial = tf.constant(0.1, shape=shape)
-  return tf.Variable(initial)
+    initial = tf.constant(0.1, shape=shape)
+    return tf.Variable(initial)
+
 
 def conv2d(x, W):
-  return tf.nn.conv2d(x, W, strides=[1, 1, 1, 1], padding='SAME')
+    return tf.nn.conv2d(x, W, strides=[1, 1, 1, 1], padding='SAME')
+
 
 def max_pool_2x2(x):
-  return tf.nn.max_pool(x, ksize=[1, 2, 2, 1],
-                        strides=[1, 2, 2, 1], padding='SAME')
+    return tf.nn.max_pool(x, ksize=[1, 2, 2, 1],
+                          strides=[1, 2, 2, 1], padding='SAME')
+
+
+mnist = input_data.read_data_sets("MnistData/", one_hot=True)
+start_time = datetime.now()
 
 # Input layer
-x  = tf.placeholder(tf.float32, [None, 784], name='x')
+x = tf.placeholder(tf.float32, [None, 784], name='x')
 y_ = tf.placeholder(tf.float32, [None, 10],  name='y_')
 x_image = tf.reshape(x, [-1, 28, 28, 1])
 
@@ -67,24 +71,23 @@ train_step = tf.train.AdamOptimizer(1e-4).minimize(cross_entropy)
 
 # Training steps
 with tf.Session() as sess:
+    run_iters = 5
+    times = [0] * run_iters
 
-  run_iters = 5
-  times = [0] * run_iters
+    for runIter in range(run_iters):
+        print("run: ", runIter)
+        start_run_time = datetime.now()
+        sess.run(tf.global_variables_initializer())
 
-  for runIter in range(run_iters):
-    print("run: ", runIter)
-    start_run_time = datetime.now()
-    sess.run(tf.global_variables_initializer())
+        max_steps = 10000
+        for step in range(max_steps):
+            batch_xs, batch_ys = mnist.train.next_batch(50)
+            if (step % 500) == 0:
+                print(step, sess.run(accuracy, feed_dict={x: mnist.test.images, y_: mnist.test.labels}))
+            sess.run(train_step, feed_dict={x: batch_xs, y_: batch_ys})
 
-    max_steps = 10000
-    for step in range(max_steps):
-      batch_xs, batch_ys = mnist.train.next_batch(50)
-      if (step % 500) == 0:
-        print(step, sess.run(accuracy, feed_dict={x: mnist.test.images, y_: mnist.test.labels}))
-      sess.run(train_step, feed_dict={x: batch_xs, y_: batch_ys})
-    print(max_steps, sess.run(accuracy, feed_dict={x: mnist.test.images, y_: mnist.test.labels}))
+        print(max_steps, sess.run(accuracy, feed_dict={x: mnist.test.images, y_: mnist.test.labels}))
+        times[runIter] = (datetime.now() - start_run_time).total_seconds()
 
-    times[runIter] = (datetime.now() - start_run_time).total_seconds()
-
-  list = times[1:]
-  print('Mean Time', sum(list) / len(list))
+    meanTimes = times[1:]
+    print('Mean Time', sum(meanTimes) / len(meanTimes))
