@@ -88,8 +88,8 @@ endif ()
 set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS}
         -Wno-deprecated-gpu-targets
 #        -gencode arch=compute_52,code=sm_52
-        -gencode arch=compute_61,code=sm_61)
-#        --compiler-options -fPIC)
+        -gencode arch=compute_61,code=sm_61
+        --compiler-options -fPIC)
 
 # for emulator debug -G -g -deviceemu
 # for cuda-memcheck  -Xcompiler -rdynamic -lineinfo -G
@@ -104,7 +104,6 @@ set(CUDA_KERNELS_NAME CudaKernels)
 
 file(GLOB_RECURSE CUDA_KERNELS_SOURCES
         Sources/CudaKernels/*.cu
-        Sources/CudaKernels/*.c
         Sources/CudaKernels/*.h)
 
 cuda_add_library(${CUDA_KERNELS_NAME} ${CUDA_KERNELS_SOURCES})

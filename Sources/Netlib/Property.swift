@@ -46,7 +46,7 @@ public protocol Property : AnyProperty {
 	typealias Setter = (ValueType) -> Void
 
 	// properties
-	unowned var owner: Properties { get }
+	var owner: Properties { get }
 	var name: String { get }
 	var value: ValueType { get set }
 	var defaultValue: ValueType { get set }

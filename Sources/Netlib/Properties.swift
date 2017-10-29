@@ -19,9 +19,9 @@ public protocol Properties : Logging {
 	var typeName: String { get }
 	var typePath: String { get set }
 	var version: Int { get }
-	weak var currentLog: Log? { get set }
-	weak var model: Model! { get set }
-	weak var parent: Properties? { get set }
+	var currentLog: Log? { get set }
+	var model: Model! { get set }
+	var parent: Properties? { get set }
 
 	// functions
 	init()

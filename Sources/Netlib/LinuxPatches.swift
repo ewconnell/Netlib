@@ -49,7 +49,11 @@ class FileSystem {
 		var temp: ObjCBool = false
 		let exists = FileManager.default.fileExists(atPath: path, isDirectory: &temp)
 #if os(Linux)
+#if swift(>=4.1)
+		return (exists, temp.boolValue)
+#else
 		return (exists, temp as Bool)
+#endif
 #else
 		return (exists, temp.boolValue)
 #endif

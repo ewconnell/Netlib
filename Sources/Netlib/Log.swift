@@ -10,7 +10,7 @@ import Dispatch
 public protocol Logging : class {
 	var logLevel: LogLevel { get set }
 	var nestingLevel: Int { get set }
-	weak var currentLog: Log? { get }
+	var currentLog: Log? { get }
 }
 
 //------------------------------------------------------------------------------
@@ -94,7 +94,7 @@ final public class Log : ModelObjectBase, InitHelper {
 	// functions
 	public func write(level: LogLevel, nestingLevel: Int,
 	                  trailing: String, minCount: Int, message: String) {
-		queue.sync() { [unowned self] in
+		queue.sync {
 			if self.maxHistory > 0 {
 				if self.history.count == self.maxHistory { self.history.removeFirst() }
 				self.history.append(LogEvent(level: level, nestingLevel: nestingLevel,
