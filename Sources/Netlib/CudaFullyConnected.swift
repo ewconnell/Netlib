@@ -7,7 +7,7 @@ import Cuda
 public class CudaFullyConnected : Computable {
 	// initializers
 	public init(log: Log?, props: ComputableFilterProperties, stream: CudaStream) {
-		self.props = props as! FullyConnectedProperties
+		self.props = (props as? FullyConnectedProperties)!
 		currentLog = log
 		dataStream = stream
 		trackingId = objectTracker.register(type: self)

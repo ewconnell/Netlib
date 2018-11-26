@@ -16,10 +16,10 @@ public class CudaDevice : ComputeDevice {
 		var tempProps = cudaDeviceProp()
 		try cudaCheck(status: cudaGetDeviceProperties(&tempProps, 0))
 		props = tempProps
+		let nameCapacity = MemoryLayout.size(ofValue: tempProps.name)
 
 		name = withUnsafePointer(to: &tempProps.name) {
-			$0.withMemoryRebound(to: UInt8.self,
-				capacity: MemoryLayout.size(ofValue: tempProps.name)) {
+			$0.withMemoryRebound(to: UInt8.self, capacity: nameCapacity) {
 				String(cString: $0)
 			}
 		}

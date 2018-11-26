@@ -914,7 +914,7 @@ final public class Database : ModelElementBase, MetricsElement, InitHelper {
 
 			//--------------------------------
 			// commit non nil items
-			let validItems = records.flatMap { $0.data }
+			let validItems = records.compactMap { $0.data }
 			
 			if willLog(level: .diagnostic) {
 				diagnostic("Committing: \(validItems.count)",
@@ -928,7 +928,7 @@ final public class Database : ModelElementBase, MetricsElement, InitHelper {
 			}
 			
 			// throw first error if there is one
-			let errors = records.flatMap { $0.error }
+			let errors = records.compactMap { $0.error }
 			guard errors.count == 0 else { throw errors[0] }
 		}
 	}

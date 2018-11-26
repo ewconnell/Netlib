@@ -7,7 +7,7 @@ import Cuda
 public final class CudaBatchNormalize : Computable {
 	// initializers
 	public init(log: Log?, props: ComputableFilterProperties, stream: CudaStream) {
-		self.props = props as! BatchNormalizeProperties
+		self.props = (props as? BatchNormalizeProperties)!
 		currentLog = log
 		dataStream = stream
 		trackingId = objectTracker.register(type: self)

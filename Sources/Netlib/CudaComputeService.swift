@@ -207,7 +207,7 @@ extension DataType {
 		}
 	}
 
-	public var cuda: cudaDataType_t {
+	public var cuda: cudaDataType {
 		get {
 			switch self {
 			case .real16F: return CUDA_R_16F

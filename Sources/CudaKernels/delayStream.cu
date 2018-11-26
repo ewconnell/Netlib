@@ -3,10 +3,10 @@
 //  Copyright (c) 2016 Connell Research. All rights reserved.
 //
 #include "include/CudaKernels.h"
-#include "../../../../../../usr/local/cuda/include/host_defines.h"
-#include "../../../../../../usr/local/cuda/include/device_launch_parameters.h"
-#include "../../../../../../usr/local/cuda/include/cuda_runtime.h"
-#include "../../../../../../usr/include/assert.h"
+//#include "../../../../../../usr/local/cuda/include/host_defines.h"
+//#include "../../../../../../usr/local/cuda/include/device_launch_parameters.h"
+//#include "../../../../../../usr/local/cuda/include/cuda_runtime.h"
+//#include "../../../../../../usr/include/assert.h"
 
 //------------------------------------------------------------------------------
 // device kernel

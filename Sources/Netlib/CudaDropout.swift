@@ -19,7 +19,7 @@ import CudaKernels
 public class CudaDropout : Computable {
 	// initializers
 	public init(log: Log?, props: ComputableFilterProperties, stream: CudaStream) {
-		self.props = props as! DropoutProperties
+		self.props = (props as? DropoutProperties)!
 		currentLog = log
 		dataStream = stream
 		trackingId = objectTracker.register(type: self)

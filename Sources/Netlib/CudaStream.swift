@@ -622,7 +622,7 @@ public final class CudaStream : DeviceStream {
 // cudaDataShape(from:)
 public func cudaDataShape(from data: DataView) -> cudaShape_t {
 	var ptr = UnsafeMutablePointer<cudaShape_t>.allocate(capacity: 1)
-	defer { ptr.deinitialize(count: 1); ptr.deallocate(capacity: 1) }
+	defer { ptr.deinitialize(count: 1); ptr.deallocate() }
 
 	cudaInitCudaShape(
 		&ptr.pointee,

@@ -7,7 +7,7 @@ import Cuda
 public class CudaActivation : Computable {
 	// initializers
 	public init(log: Log?, props: ComputableFilterProperties, stream: CudaStream) {
-		self.props = props as! ActivationProperties
+		self.props = (props as? ActivationProperties)!
 		currentLog = log
 		dataStream = stream
 		trackingId = objectTracker.register(type: self)

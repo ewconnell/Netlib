@@ -7,7 +7,7 @@ import Cuda
 public class CudaSoftmax : Computable {
 	// initializers
 	public init(log: Log?, props: ComputableFilterProperties, stream: CudaStream) {
-		self.props = props as! SoftmaxProperties
+		self.props = (props as? SoftmaxProperties)!
 		currentLog = log
 		dataStream = stream
 		trackingId = objectTracker.register(type: self)

@@ -7,7 +7,7 @@ import Cuda
 public class CudaConvolution : Computable {
 	// initializers
 	public init(log: Log?, props: ComputableFilterProperties, stream: CudaStream) {
-		self.props = props as! ConvolutionProperties
+		self.props = (props as? ConvolutionProperties)!
 		currentLog = log
 		dataStream = stream
 		trackingId = objectTracker.register(type: self)

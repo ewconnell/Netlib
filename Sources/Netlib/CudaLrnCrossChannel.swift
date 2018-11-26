@@ -7,7 +7,7 @@ import Cuda
 public class CudaLrnCrossChannel : Computable {
 	// initializers
 	public init(log: Log?, props: ComputableFilterProperties, stream: CudaStream) {
-		self.props = props as! LrnCrossChannelProperties
+		self.props = (props as? LrnCrossChannelProperties)!
 		currentLog = log
 		dataStream = stream
 		trackingId = objectTracker.register(type: self)

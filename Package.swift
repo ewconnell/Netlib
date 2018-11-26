@@ -1,14 +1,17 @@
+// swift-tools-version:4.0
 import PackageDescription
 
 let package = Package(
 	name: "Netlib",
-	targets: [
-		Target(name: "diagnosticExample", dependencies: [.Target(name: "Netlib")]),
-		Target(name: "trainCodeModel", dependencies: [.Target(name: "Netlib")]),
-		Target(name: "trainXmlModel", dependencies: [.Target(name: "Netlib")]),
-		Target(name: "vgg16Example", dependencies: [.Target(name: "Netlib")]),
-		Target(name: "Netlib", dependencies: [.Target(name: "ImageCodecs")]),
-		Target(name: "ImageCodecs")
+	products: [
+		.library(name: "Netlib", targets: ["Netlib"])
 	],
-	exclude: ["Sources/CudaKernels"]
+	targets: [
+		.target(name: "ImageCodecs"),
+		.target(name: "Netlib", dependencies: ["ImageCodecs"]),
+		.target(name: "diagnosticExample", dependencies: ["Netlib"]),
+		.target(name: "trainCodeModel", dependencies: ["Netlib"]),
+		.target(name: "trainXmlModel", dependencies: ["Netlib"]),
+		.target(name: "vgg16Example", dependencies: ["Netlib"]),
+	]
 )

@@ -200,29 +200,15 @@ extension UInt64 {
 // MARK: - Collection extensions for shuffling and getting random elements
 
 
-extension Collection where IndexDistance == Int, Index == Int {
+extension Collection where Index == Int {
 	func randomElement<R: RandomGenerator>(using randomGenerator: R) -> Iterator.Element {
 		return self[randomGenerator.next().int(inRange: 0 ..< count)]
 	}
 	func randomElement(using randomBits: UInt64) -> Iterator.Element {
 		return self[randomBits.int(inRange: 0 ..< count)]
 	}
-	mutating func shuffled<R: RandomGenerator>(using randomGenerator: R) -> [Iterator.Element] {
-		var mutableCopy = Array<Iterator.Element>(self)
-		mutableCopy.shuffle(using: randomGenerator)
-		return mutableCopy
-	}
+}
 
-}
-extension MutableCollection where IndexDistance == Int, Index == Int {
-	mutating func shuffle<R: RandomGenerator>(using randomGenerator: R) {
-		if count < 2 { return }
-		for i1 in (1 ..< count).reversed() {
-			let i2 = randomGenerator.next().int(inRange: 0 ..< i1+1)
-			(self[i1], self[i2]) = (self[i2], self[i1])
-		}
-	}
-}
 
 
 

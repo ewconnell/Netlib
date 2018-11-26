@@ -7,7 +7,7 @@ import Cuda
 public class CudaPooling : Computable {
 	// initializers
 	public init(log: Log?, props: ComputableFilterProperties, stream: CudaStream) {
-		self.props = props as! PoolingProperties
+		self.props = (props as? PoolingProperties)!
 		currentLog = log
 		dataStream = stream
 		trackingId = objectTracker.register(type: self)
