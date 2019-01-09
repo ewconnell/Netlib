@@ -10,15 +10,6 @@ import Netlib
 // specify an object allocation id to break on
 //objectTracker.debuggerRegisterBreakId = 42
 
-func meanTime(times: [TimeInterval]) -> TimeInterval {
-	// drop the first iteration to eliminate load/init times for external
-	// libraries such as Cuda. The same is done in the python scripts when
-	// comparing with Caffe2 and TensorFlow
-	let t = times[(times.count > 1 ? 1 : 0)...]
-	return t.reduce(0, +) / Double(t.count)
-}
-
-
 do {
 	let model = Model {
 //	$0.concurrencyMode = .serial
@@ -32,17 +23,16 @@ do {
 		fatalError("Resource not found: \(fileName)")
 	}
 	try model.load(contentsOf: URL(fileURLWithPath: path))
+	try model.train()
 
-	var times = [TimeInterval]()
-	for _ in 0..<5 {
-		let start = Date()
+	// mean training time test
+	let numberOfRuns = 4
+	let start = Date()
+	for _ in 0..<numberOfRuns {
 		try model.train()
-		times.append(Date().timeIntervalSince(start))
 	}
-
-	print("\nMean training time: \(String(timeInterval: meanTime(times: times)))")
-//	try print(model.asJson(options: .prettyPrinted))
-
+	let end = Date()
+	print("Mean time: " + String(timeInterval: end.timeIntervalSince(start) / Double(numberOfRuns)))
 
 } catch {
 	print(String(describing: error))
