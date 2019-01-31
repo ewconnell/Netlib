@@ -37,9 +37,14 @@ file(GLOB_RECURSE MODULES_HEADERS
 # swift
 #   set SWIFT_HOME in /etc/enviornment for CLion to pick up
 # and logout/login to make visible after setting
-set(SWIFT $ENV{SWIFT_HOME}/bin/swift)
-set(SWIFTC $ENV{SWIFT_HOME}/bin/swiftc)
-set(SWIFT_CLANG_INCLUDE $ENV{SWIFT_HOME}/lib/swift/clang/include)
+IF(DEFINED ENV{SWIFT_HOME})
+    set(SWIFT_HOME $ENV{SWIFT_HOME})
+ELSE()
+    set(SWIFT_HOME "$ENV{HOME}/swift/usr")
+ENDIF()
+set(SWIFT ${SWIFT_HOME}/bin/swift)
+set(SWIFTC ${SWIFT_HOME}/bin/swiftc)
+set(SWIFT_CLANG_INCLUDE ${SWIFT_HOME}/lib/swift/clang/include)
 
 # configuration specific swift flags
 set(SWIFT_CONFIG_FLAGS
