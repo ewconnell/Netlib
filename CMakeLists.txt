@@ -35,11 +35,11 @@ file(GLOB_RECURSE MODULES_HEADERS
 
 #####################
 # swift
-#find_program(SWIFT swift)
-set(SWIFT_HOME /home/ed/swift/usr)
-set(SWIFT ${SWIFT_HOME}/bin/swift)
-set(SWIFTC ${SWIFT_HOME}/bin/swiftc)
-set(SWIFT_CLANG_INCLUDE ${SWIFT_HOME}/lib/swift/clang/include)
+#   set SWIFT_HOME in /etc/enviornment for CLion to pick up
+# and logout/login to make visible after setting
+set(SWIFT $ENV{SWIFT_HOME}/bin/swift)
+set(SWIFTC $ENV{SWIFT_HOME}/bin/swiftc)
+set(SWIFT_CLANG_INCLUDE $ENV{SWIFT_HOME}/lib/swift/clang/include)
 
 # configuration specific swift flags
 set(SWIFT_CONFIG_FLAGS
