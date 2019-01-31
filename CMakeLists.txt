@@ -40,11 +40,11 @@ file(GLOB_RECURSE MODULES_HEADERS
 IF(DEFINED ENV{SWIFT_HOME})
     set(SWIFT_HOME $ENV{SWIFT_HOME})
 ELSE()
-    set(SWIFT_HOME /swift/usr)
+    set(SWIFT_HOME /usr/local/swift)
 ENDIF()
-set(SWIFT ${SWIFT_HOME}/bin/swift)
-set(SWIFTC ${SWIFT_HOME}/bin/swiftc)
-set(SWIFT_CLANG_INCLUDE ${SWIFT_HOME}/lib/swift/clang/include)
+set(SWIFT ${SWIFT_HOME}/usr/bin/swift)
+set(SWIFTC ${SWIFT_HOME}/usr/bin/swiftc)
+set(SWIFT_CLANG_INCLUDE ${SWIFT_HOME}/usr/lib/swift/clang/include)
 
 # configuration specific swift flags
 set(SWIFT_CONFIG_FLAGS
