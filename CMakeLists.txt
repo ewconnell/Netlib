@@ -40,7 +40,7 @@ file(GLOB_RECURSE MODULES_HEADERS
 IF(DEFINED ENV{SWIFT_HOME})
     set(SWIFT_HOME $ENV{SWIFT_HOME})
 ELSE()
-    set(SWIFT_HOME "$ENV{HOME}/swift/usr")
+    set(SWIFT_HOME /swift/usr)
 ENDIF()
 set(SWIFT ${SWIFT_HOME}/bin/swift)
 set(SWIFTC ${SWIFT_HOME}/bin/swiftc)
