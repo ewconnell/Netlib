@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Solver labels="mnistClassifier.labels" maxIterations="10000"
-        weightDecay="0.006" testBatchSize="1000">
+<Solver labels="mnistClassifier.labels" batchSize="60" testBatchSize="10000">
 	<defaults>
 		<!--<Default property="Database.streamOutput" value="true"/>-->
 		<!--<Default property="Database.dataType"     value="real16F"/>-->

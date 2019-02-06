@@ -53,7 +53,7 @@ final public class Solver : ModelElementContainerBase, ModelSolver, InitHelper {
 	public var stepSize = 1                       { didSet{onSet("stepSize")} }
 	public var snapShotInterval: Int?             { didSet{onSet("snapShotInterval")} }
 	public var testBatchSize = 100                { didSet{onSet("testBatchSize")} }
-	public var testInterval = 500                 { didSet{onSet("testInterval")} }
+	public var testInterval = 1000                { didSet{onSet("testInterval")} }
 	public var tests = OrderedNamespace<Test>()   { didSet{onSet("tests")} }
 	public var weightDecay = 0.006                { didSet{onSet("weightDecay")} }
 
@@ -245,11 +245,13 @@ final public class Solver : ModelElementContainerBase, ModelSolver, InitHelper {
 			try updateLearningRate(iteration: currentIteration)
 			try updateLearnedParameters()
 
+
 			// test after at least one forward pass so that test templates
 			// can benefit from possible cached data during setupForward
-			if testInterval > 0 && (currentIteration % testInterval) == 0 &&
-				   currentIteration != maxIterations - 1
-			{
+			if currentIteration > 0 && testInterval > 0 &&
+						 (currentIteration % testInterval) == 0 &&
+						 currentIteration < maxIterations - 1 {
+
 				try runTests(group: testGroup, loss: currentAverageLoss,
 					           epoch: currentEpoch, pass: testPass)
 				testPass += 1
