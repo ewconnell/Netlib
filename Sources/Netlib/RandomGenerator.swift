@@ -1,6 +1,4 @@
 //
-//  RandomGenerator.swift
-//
 //  Created by Jens Persson on 2017-05-22.
 //  Copyright © 2017 Jens Persson. All rights reserved.
 //
